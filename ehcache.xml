@@ -1,0 +1,293 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="ehcache.xsd"
+         updateCheck="true" monitoring="autodetect"
+         dynamicConfig="true">
+	<!-- 
+		磁盘存储:将缓存中暂时不使用的对象,转移到硬盘,类似于Windows系统的虚拟内存 path:指定在硬盘上存储对象的路径 .
+		当内存缓存中对象数量超过maxElementsInMemory时,将缓存对象写到磁盘缓存中(需对象实现序列化接口)
+	-->
+	<diskStore path="java.io.tmpdir"/>
+	<!-- defaultCache:默认的缓存配置信息,如果不加特殊说明,则所有对象按照此配置项处理 -->
+	<!-- 
+		各配置项详细说明
+			必需属性：
+				name:Cache的名称，必须是唯一的(ehcache会把这个cache放到HashMap里)。
+				maxEntriesLocalHeap：本地内存中缓存最大记录数，0不限制（0不限制默认是指Integer.MaxValue，如果使用Terracotta 分布式缓存，则由分布式缓存决定实际存储最大记录数）
+				maxEntriesLocalDisk：硬盘最大缓存个数。0-不限制
+				eternal:对象是否永久有效，一但设置了，timeout将不起作用。
+			可选属性：
+				maxEntriesInCache：缓存中的最大记录数。用于Terracotta 分布式缓存。0-不限制
+				overflowToOffHeap：用于企业级ehcache。boolean值
+				maxBytesLocalHeap：本地内存中缓存最大容量，单位可以是k|K|m|M|g|G，使用此属性，则maxEntriesLocalHeap属性失效
+				maxBytesLocalOffHeap：用于企业级ehcache，
+				maxBytesLocalDisk：硬盘存储中缓存最大容量，单位可以是k|K|m|M|g|G，使用此属性，则maxEntriesLocalDisk属性失效
+				timeToIdleSeconds：导致元素过期的访问间隔(秒为单位),即当缓存闲置n秒后销毁。当eternal为false时，这个属性才有效，0表示可以永远空闲,默认为0
+				timeToLiveSeconds:最大的存活时间 。元素在缓存里存在的时间(秒为单位)，即当缓存存活n秒后销毁. 0 表示永远存在不过期
+				diskExpiryThreadIntervalSeconds:磁盘失效线程运行时间间隔，默认是120秒。
+				diskSpoolBufferSizeMB：这个参数设置DiskStore（磁盘缓存）的缓存区大小。默认是30MB。每个Cache都应该有自己的一个缓冲区。
+				clearOnFlush : 调用flush()方法时是否清除缓存。默认为true
+				copyOnRead：从缓存中提取出的数据是否采用复制模式（非引用模式），默认为false。
+				copyOnWrite：向缓存中放入数据时是否采用复制模式（非引用模式），默认为false。
+				overflowToDisk:当缓存达到maxElementsInMemory值是,是否允许溢出到磁盘(必须设置)(内存不足时，是否启用磁盘缓存。)
+				memoryStoreEvictionPolicy="LFU" : 当达到maxElementsInMemory时,如何强制进行驱逐。默认使用"最近使用(LRU)"策略,其它还有先入先出FIFO,最少使用LFU,较少使用LRU
+				diskPersistent: 磁盘缓存在JVM重新启动时是否保持(默认为false)
+				overflowToDisk：超出的是否向硬盘写入（默认为false）
+				缓存持久化使用persistence子标签.  persistence标签属性包括：
+					strategy：缓存持久化类型，只能是下列值之一：
+						localRestartable：用于企业级ehcache，
+						localTempSwap：超限的向硬盘写入。
+						none：不向硬盘写入。
+						distributed：分布式，必须配合Terracotta 分布式缓存使用。
+					synchronousWrites：是否同步写，默认false
+	 -->
+	<defaultCache 
+		maxEntriesLocalHeap="1000" 
+		maxEntriesLocalDisk="0"
+		eternal="false"
+		timeToIdleSeconds="600"
+		timeToLiveSeconds="1200">
+		<persistence strategy="localTempSwap" />
+	</defaultCache>
+	
+	<!-- 用户最后加入的频道信息 -->
+	<cache 
+		name="UserChannelIdCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户最后加入的频道信息 -->
+	<cache 
+		name="ChannelUserCountCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	
+	<!-- 用户基本信息 -->
+	<cache 
+		name="userCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 机器人验证缓存 -->
+	<cache 
+		name="robotCheckCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 机器人缓存 -->
+	<cache 
+		name="robotCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户实名信息 -->
+	<cache 
+		name="userRealCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户比美币信息 -->
+	<cache 
+		name="userMoneyCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户荣誉 -->
+	<cache 
+		name="userHonorsCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户天使快链 -->
+	<cache 
+		name="userTiansklCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户私聊申请设置 -->
+	<cache 
+		name="userPrivateMessgeReqConfigCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 用户获得礼物排行榜（只保留前几名） -->
+	<cache 
+		name="userGiftMoneyCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	<!-- 设备信息 -->
+	<cache 
+		name="devicesCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="20G"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap" />
+	</cache>
+	
+	<!-- 比美场缓存定义 -->
+	<cache 
+		name="bimeichangCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="true"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 设备状态缓存定义 -->
+	<cache 
+		name="deviceStatusCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="true"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 聊天室缓存定义 -->
+	<cache 
+		name="chatRoomCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="true"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 世界频道缓存定义 -->
+	<cache 
+		name="globalMessagesCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="true"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 
+		礼物连击缓存定义
+		timeToIdleSeconds 需要根据 gift.hits.waiting.peroid 配置项，在代码中覆写
+	 -->
+	<cache 
+		name="giftHitsCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="false"
+		memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="5"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 
+		免费礼物间隔缓存定义
+		timeToIdleSeconds 需要根据 free.gift.peroid 配置项，在代码中覆写
+	 -->
+	<cache 
+		name="freeGiftFrequencyCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="false"
+		memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="60"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 
+		送礼时间间隔缓存定义
+		timeToIdleSeconds 需要根据 gift.send.frequency 配置项，在代码中覆写
+	 -->
+	<cache 
+		name="giftFrequencyCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="false"
+		memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="2"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 
+		评论时间间隔缓存定义
+		timeToIdleSeconds 需要根据 comment.release.frequency 配置项，在代码中覆写
+	 -->
+	<cache 
+		name="commentFrequencyCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="false"
+		memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="2"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	
+	<!-- 
+		点赞时间间隔缓存定义
+		timeToIdleSeconds 需要根据 bimeichang.click.frequency 配置项，在代码中覆写
+	 -->
+	<cache 
+		name="bimeichangClickFrequencyCache"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="false"
+		memoryStoreEvictionPolicy="LFU"
+		timeToIdleSeconds="2"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+	<!-- 
+		机器人缓存
+		eternal="true" 默认为人工销毁
+	 -->
+	<cache 
+		name="functionalRobot"
+		maxBytesLocalHeap="10M"
+		maxBytesLocalDisk="10G"
+		eternal="true"
+		memoryStoreEvictionPolicy="LFU"
+		>
+		<persistence strategy="localTempSwap"/>
+	</cache>
+</ehcache>
